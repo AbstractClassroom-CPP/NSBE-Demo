@@ -10,15 +10,15 @@ public:
     int numRows() const;
     int numCols() const;
 
-    double get(int row, int col) const;
-    void set(int row, int col, double value);
+    int get(int row, int col) const;
+    void set(int row, int col, int value);
 
     MatrixClass add(const MatrixClass& other) const;
 
 private:
     int rows_;
     int cols_;
-    std::vector<std::vector<double>> values_;
+    std::vector<std::vector<int>> values_;
 };
 
 #endif

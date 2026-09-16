@@ -3,7 +3,7 @@
 #include <stdexcept>
 
 MatrixClass::MatrixClass(int rows, int cols)
-    : rows_(rows), cols_(cols), values_(rows, std::vector<double>(cols, 0.0)) {
+    : rows_(rows), cols_(cols), values_(rows, std::vector<int>(cols, 0)) {
 }
 
 int MatrixClass::numRows() const {
@@ -14,11 +14,11 @@ int MatrixClass::numCols() const {
     return cols_;
 }
 
-double MatrixClass::get(int row, int col) const {
+int MatrixClass::get(int row, int col) const {
     return values_.at(row).at(col);
 }
 
-void MatrixClass::set(int row, int col, double value) {
+void MatrixClass::set(int row, int col, int value) {
     values_.at(row).at(col) = value;
 }
 
