@@ -2,7 +2,20 @@
 
 This is the repo created for Nathan Russell's NSBE demonstration on September 16, 2026.
 
-A simple C++ matrix class in `MatrixClass.h` and `MatrixClass.cpp`, with an example in `main.cpp`.
+A small C++ program that uses the integer matrix library from the separate
+[MatrixClass repository](https://github.com/AbstractClassroom-CPP/MatrixClass).
+CMake fetches that dependency from its `main` branch and builds it with the program.
+
+```text
+NSBE-Demo/
+├── CMakeLists.txt
+├── main.cpp
+├── README.md
+└── .gitignore
+```
+
+The class's header and implementation now live in the MatrixClass repository.
+The code in `main.cpp` still uses the same interface:
 
 ```cpp
 MatrixClass a(2, 3); // Rows, columns; all values start at zero.
@@ -17,25 +30,39 @@ int value = c.get(0, 1); // 6
 Values are integers (`int`). Addition returns a new matrix and leaves both inputs unchanged.
 Adding different dimensions throws `std::invalid_argument`; an invalid index throws `std::out_of_range`.
 
-## Mac
+## Build and run
 
-Install the command-line tools if needed: `xcode-select --install`.
-From the `NSBE-Demo` directory:
+You need Git, CMake 3.14 or newer, and a C++ compiler. The first configuration needs
+internet access to fetch MatrixClass. You only need to clone NSBE-Demo; CMake handles
+the dependency checkout inside `build/_deps/`.
 
 ```bash
-clang++ -std=c++11 -Wall -Wextra -pedantic MatrixClass.cpp main.cpp -o matrix_demo
-./matrix_demo
+git clone https://github.com/AbstractClassroom-CPP/NSBE-Demo.git
+cd NSBE-Demo
 ```
 
-## Windows (Git Bash)
+If you already have this repository, run the following commands from its directory.
 
-Install a C++ compiler such as MinGW-w64 and put its `bin` directory on your Windows `PATH`.
-Reopen Git Bash and check `g++ --version` works; Git Bash itself does not include a C++ compiler.
-From the `NSBE-Demo` directory:
+### Mac
+
+Install CMake and Apple's command-line tools (`xcode-select --install`) if needed.
 
 ```bash
-g++ -std=c++11 -Wall -Wextra -pedantic MatrixClass.cpp main.cpp -o matrix_demo.exe
-./matrix_demo.exe
+cmake -S . -B build -G "Unix Makefiles"
+cmake --build build
+./build/matrix_demo
+```
+
+### Windows (Git Bash)
+
+Install CMake, Ninja, and a MinGW-w64 C++ compiler. Put their executable directories
+on your Windows `PATH` and reopen Git Bash. Check that `cmake --version`,
+`ninja --version`, `g++ --version`, and `git --version` work.
+
+```bash
+cmake -S . -B build -G Ninja -DCMAKE_CXX_COMPILER=g++
+cmake --build build
+./build/matrix_demo.exe
 ```
 
 Expected output on either platform:
@@ -45,3 +72,16 @@ Expected output on either platform:
 6 8
 10 12
 ```
+
+## How the dependency is connected
+
+`FetchContent_Declare` records MatrixClass's Git URL and `GIT_TAG main`.
+`FetchContent_MakeAvailable` fetches it during configuration and adds its library target
+to our build. `target_link_libraries` connects `matrix_demo` to
+`MatrixClass::MatrixClass`, which supplies the include directory, library, and C++ requirement.
+
+The `cmake -S . -B build` step configures and generates the build files. The
+`cmake --build build` step invokes Make on Mac or Ninja with the Windows commands above.
+After editing `main.cpp`, run `cmake --build build` again.
+To check for updates on the dependency's `main` branch, rerun the configuration command
+and then build. Using a branch means the dependency can change between configurations.
