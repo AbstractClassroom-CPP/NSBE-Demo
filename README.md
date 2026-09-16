@@ -4,7 +4,7 @@ This is the repo created for Nathan Russell's NSBE demonstration on September 16
 
 A small C++ program that uses the integer matrix library from the separate
 [MatrixClass repository](https://github.com/AbstractClassroom-CPP/MatrixClass).
-CMake fetches that dependency from its `main` branch and builds it with the program.
+Version `0.1.0` fetches MatrixClass version `1.0.0` and builds it with the program.
 
 ```text
 NSBE-Demo/
@@ -75,7 +75,7 @@ Expected output on either platform:
 
 ## How the dependency is connected
 
-`FetchContent_Declare` records MatrixClass's Git URL and `GIT_TAG main`.
+`FetchContent_Declare` records MatrixClass's Git URL and `GIT_TAG 1.0.0`.
 `FetchContent_MakeAvailable` fetches it during configuration and adds its library target
 to our build. `target_link_libraries` connects `matrix_demo` to
 `MatrixClass::MatrixClass`, which supplies the include directory, library, and C++ requirement.
@@ -83,5 +83,5 @@ to our build. `target_link_libraries` connects `matrix_demo` to
 The `cmake -S . -B build` step configures and generates the build files. The
 `cmake --build build` step invokes Make on Mac or Ninja with the Windows commands above.
 After editing `main.cpp`, run `cmake --build build` again.
-To check for updates on the dependency's `main` branch, rerun the configuration command
-and then build. Using a branch means the dependency can change between configurations.
+The dependency is pinned to version `1.0.0`, so changes to the library's `main` branch
+do not change this demo release.
